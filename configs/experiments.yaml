@@ -1,0 +1,38 @@
+dataset_count: 40
+seeds: [7, 11, 19, 23, 31]
+configurations:
+  C0:
+    d1_identity: false
+    d2_replay: false
+    d3_permissions: false
+    d4_sanitization: false
+    d5_trust: false
+    d6_audit: false
+  C1:
+    d1_identity: true
+    d2_replay: true
+    d3_permissions: false
+    d4_sanitization: false
+    d5_trust: false
+    d6_audit: false
+  C2:
+    d1_identity: true
+    d2_replay: true
+    d3_permissions: true
+    d4_sanitization: false
+    d5_trust: false
+    d6_audit: false
+  C3:
+    d1_identity: true
+    d2_replay: true
+    d3_permissions: true
+    d4_sanitization: true
+    d5_trust: false
+    d6_audit: false
+  C4:
+    d1_identity: true
+    d2_replay: true
+    d3_permissions: true
+    d4_sanitization: true
+    d5_trust: true
+    d6_audit: true
