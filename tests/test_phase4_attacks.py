@@ -52,11 +52,13 @@ def test_all_attacks_are_detected_by_relevant_full_stack_defenses() -> None:
 def test_attack_controls_are_independently_toggleable() -> None:
     assert not message_tampering(_layer(d1_identity=False)).detected
     assert not replay(_layer(d2_replay=False)).detected
-    assert not prompt_injection(_layer(d4_sanitization=False, d1_identity=False, d2_replay=False)).detected
+    assert not prompt_injection(
+        _layer(d4_sanitization=False, d1_identity=False, d2_replay=False),
+        _task(),
+    ).detected
     assert not privilege_escalation(
         _layer(d3_permissions=False, d1_identity=False, d2_replay=False)
     ).detected
-
 
 def test_experiment_runner_writes_reproducible_raw_rows(tmp_path: Path) -> None:
     output = tmp_path / "attack_runs.jsonl"
