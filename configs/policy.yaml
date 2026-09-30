@@ -1,0 +1,13 @@
+agents:
+  extractor:
+    message_types: [facts]
+    tools: []
+  analyst:
+    message_types: [risk_flags]
+    tools: []
+  writer:
+    message_types: [summary]
+    tools: []
+  verifier:
+    message_types: [verification]
+    tools: []

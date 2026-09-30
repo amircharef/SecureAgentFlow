@@ -1,6 +1,6 @@
 """Common agent contract for the baseline workflow."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from secureagentflow.llm import LLMClient
@@ -12,10 +12,15 @@ class AgentContext:
 
     trace_id: str
     tokens_used: int = 0
+    security_events: list[dict[str, Any]] = field(default_factory=list)
 
     def record(self, tokens_used: int) -> None:
         """Accumulate provider-reported token usage."""
         self.tokens_used += tokens_used
+
+    def record_security_event(self, event: str, details: dict[str, Any]) -> None:
+        """Record a security decision in the task trace."""
+        self.security_events.append({"event": event, "details": details})
 
 
 class Agent:
