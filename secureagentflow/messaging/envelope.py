@@ -2,12 +2,15 @@
 
 import base64
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
 
 from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import (
+    Ed25519PrivateKey,
+    Ed25519PublicKey,
+)
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -22,7 +25,7 @@ class MessageEnvelope(BaseModel):
     receiver: str
     type: str
     payload: dict[str, Any]
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
     nonce: str = Field(default_factory=lambda: str(uuid4()))
     signature: str | None = None
 

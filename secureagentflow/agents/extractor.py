@@ -17,7 +17,9 @@ class ExtractorAgent(Agent):
 
     def extract(self, document_text: str, context: AgentContext) -> dict[str, Any]:
         """Return normalized key-value facts found in ``document_text``."""
-        self.call_llm(f"Extract key facts from this clinical document:\n{document_text}", context)
+        self.call_llm(
+            f"Extract key facts from this clinical document:\n{document_text}", context
+        )
         facts: dict[str, Any] = {}
         for match in self._FACT_PATTERN.finditer(document_text):
             key = match.group("key").lower()

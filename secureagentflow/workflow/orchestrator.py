@@ -3,7 +3,12 @@
 from time import perf_counter
 from uuid import uuid4
 
-from secureagentflow.agents import AnalystAgent, ExtractorAgent, VerifierAgent, WriterAgent
+from secureagentflow.agents import (
+    AnalystAgent,
+    ExtractorAgent,
+    VerifierAgent,
+    WriterAgent,
+)
 from secureagentflow.agents.base import AgentContext
 from secureagentflow.llm import LLMClient
 from secureagentflow.messaging import MessageEnvelope
@@ -21,7 +26,9 @@ class BaselineOrchestrator:
         self.verifier = VerifierAgent("verifier", llm)
         self.security = security
         if self.security is not None:
-            self.security.register_agents(["extractor", "analyst", "writer", "verifier"])
+            self.security.register_agents(
+                ["extractor", "analyst", "writer", "verifier"]
+            )
 
     def build_plan(self, task: ClinicalTask) -> WorkflowPlan:
         """Build the fixed DAG used for a clinical document task."""
@@ -42,9 +49,13 @@ class BaselineOrchestrator:
                 context.record_security_event("input_quarantined", {"pattern": event})
 
         extracted_facts = self.extractor.extract(document_text, context)
-        self._transport(context, "extractor", "analyst", "facts", {"facts": extracted_facts})
+        self._transport(
+            context, "extractor", "analyst", "facts", {"facts": extracted_facts}
+        )
         risk_flags = self.analyst.analyze(extracted_facts, context)
-        self._transport(context, "analyst", "writer", "risk_flags", {"risk_flags": risk_flags})
+        self._transport(
+            context, "analyst", "writer", "risk_flags", {"risk_flags": risk_flags}
+        )
         summary = self.writer.write(extracted_facts, risk_flags, context)
         self._transport(context, "writer", "verifier", "summary", {"summary": summary})
         success = self.verifier.verify(

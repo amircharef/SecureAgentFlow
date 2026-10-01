@@ -59,7 +59,9 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     for task in generate_tasks(count=args.count, seed=args.seed):
         path = args.output_dir / f"{task['task_id']}.json"
-        path.write_text(json.dumps(task, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        path.write_text(
+            json.dumps(task, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
     print(f"Generated {args.count} tasks in {args.output_dir}")
 
 

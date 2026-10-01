@@ -1,7 +1,7 @@
 """Phase 4 attack simulation tests."""
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 from attacks import (
     compromised_agent,
@@ -11,9 +11,9 @@ from attacks import (
     prompt_injection,
     replay,
 )
+from scripts.run_experiments import run_experiments
 from secureagentflow.security import CapabilityPolicy, SecurityConfig, SecurityLayer
 from secureagentflow.workflow import ClinicalTask
-from scripts.run_experiments import run_experiments
 
 
 def _layer(**overrides: bool) -> SecurityLayer:
@@ -34,7 +34,13 @@ def _task() -> ClinicalTask:
     return ClinicalTask(
         task_id="attack-task",
         document_text="age=42; sex=female; hemoglobin=12; glucose=90; creatinine=0.8",
-        expected_facts={"age": 42, "sex": "female", "hemoglobin": 12, "glucose": 90, "creatinine": 0.8},
+        expected_facts={
+            "age": 42,
+            "sex": "female",
+            "hemoglobin": 12,
+            "glucose": 90,
+            "creatinine": 0.8,
+        },
         expected_flags=[],
     )
 
@@ -60,11 +66,22 @@ def test_attack_controls_are_independently_toggleable() -> None:
         _layer(d3_permissions=False, d1_identity=False, d2_replay=False)
     ).detected
 
+
 def test_experiment_runner_writes_reproducible_raw_rows(tmp_path: Path) -> None:
     output = tmp_path / "attack_runs.jsonl"
     run_experiments(output_path=output)
-    rows = [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines()]
+    rows = [
+        json.loads(line) for line in output.read_text(encoding="utf-8").splitlines()
+    ]
 
     assert len(rows) == (5 * 5 * 40) + (5 * 5 * 6)
     assert {row["configuration"] for row in rows} == {"C0", "C1", "C2", "C3", "C4"}
-    assert {row["attack"] for row in rows} == {"clean", "A1", "A2", "A3", "A4", "A5", "A6"}
+    assert {row["attack"] for row in rows} == {
+        "clean",
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+    }

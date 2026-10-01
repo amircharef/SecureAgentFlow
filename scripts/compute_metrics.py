@@ -139,6 +139,7 @@ def compute_metrics(frame: pd.DataFrame) -> pd.DataFrame:
 
 def _write_summary(metrics: pd.DataFrame, path: Path) -> None:
     """Write human-readable tables derived from the metrics dataframe."""
+
     def markdown_table(frame: pd.DataFrame) -> str:
         """Render a dataframe as Markdown without an extra table dependency."""
         columns = [str(column) for column in frame.columns]
@@ -152,8 +153,12 @@ def _write_summary(metrics: pd.DataFrame, path: Path) -> None:
 
     clean = metrics[metrics["attack"] == "clean"]
     attacks = metrics[metrics["attack"] == "all_attacks"]
-    table = clean.pivot(index="configuration", columns="metric", values="value").reset_index()
-    attack_table = attacks.pivot(index="configuration", columns="metric", values="value").reset_index()
+    table = clean.pivot(
+        index="configuration", columns="metric", values="value"
+    ).reset_index()
+    attack_table = attacks.pivot(
+        index="configuration", columns="metric", values="value"
+    ).reset_index()
     sections = [
         "# SecureAgentFlow Evaluation Summary",
         "",

@@ -1,16 +1,14 @@
 """Unit tests for the independently switchable security defenses."""
 
-from datetime import datetime, timedelta, timezone
 import json
+from datetime import UTC, datetime, timedelta
 
 import pytest
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 from secureagentflow.messaging import MessageEnvelope
 from secureagentflow.security.audit import AuditLog
 from secureagentflow.security.config import SecurityConfig
 from secureagentflow.security.exceptions import (
-    IdentityError,
     PermissionDenied,
     ReplayError,
 )
@@ -54,14 +52,16 @@ def test_d2_replay_protection_rejects_duplicate_and_stale_messages() -> None:
     with pytest.raises(ReplayError):
         guard.check(envelope)
     stale = envelope.model_copy(
-        update={"nonce": "old", "timestamp": datetime.now(timezone.utc) - timedelta(seconds=11)}
+        update={"nonce": "old", "timestamp": datetime.now(UTC) - timedelta(seconds=11)}
     )
     with pytest.raises(ReplayError):
         guard.check(stale)
 
 
 def test_d3_capabilities_deny_by_default() -> None:
-    policy = CapabilityPolicy.from_file(__import__("pathlib").Path("configs/policy.yaml"))
+    policy = CapabilityPolicy.from_file(
+        __import__("pathlib").Path("configs/policy.yaml")
+    )
 
     policy.require_message("extractor", "facts")
     with pytest.raises(PermissionDenied):
@@ -108,7 +108,9 @@ def test_full_stack_layer_accepts_signed_policy_compliant_message(tmp_path) -> N
     config = SecurityConfig.full_stack(tmp_path / "audit.jsonl")
     registry = IdentityRegistry()
     registry.register(AgentIdentity("extractor"))
-    policy = CapabilityPolicy({"agents": {"extractor": {"message_types": ["facts"], "tools": []}}})
+    policy = CapabilityPolicy(
+        {"agents": {"extractor": {"message_types": ["facts"], "tools": []}}}
+    )
     layer = SecurityLayer(config, registry=registry, policy=policy)
 
     envelope = layer.send("extractor", "analyst", "facts", {"facts": []}, "trace")

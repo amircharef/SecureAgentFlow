@@ -17,7 +17,9 @@ class AuditLog:
     def append(self, event: str, details: dict[str, Any]) -> str:
         """Append one canonical record and return its entry hash."""
         record = {"event": event, "details": details, "prev_hash": self._last_hash}
-        encoded = json.dumps(record, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        encoded = json.dumps(record, sort_keys=True, separators=(",", ":")).encode(
+            "utf-8"
+        )
         entry_hash = hashlib.sha256(encoded).hexdigest()
         record["entry_hash"] = entry_hash
         with self.path.open("a", encoding="utf-8") as handle:
@@ -35,7 +37,9 @@ class AuditLog:
             expected_hash = record.pop("entry_hash")
             if record.get("prev_hash") != previous:
                 return False
-            encoded = json.dumps(record, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            encoded = json.dumps(record, sort_keys=True, separators=(",", ":")).encode(
+                "utf-8"
+            )
             if hashlib.sha256(encoded).hexdigest() != expected_hash:
                 return False
             previous = expected_hash

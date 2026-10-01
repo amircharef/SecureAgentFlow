@@ -54,9 +54,9 @@ def test_compute_metrics_uses_clean_c0_as_overhead_baseline() -> None:
     c1_latency = metrics.query(
         "configuration == 'C1' and metric == 'latency_overhead_ms_vs_C0'"
     )["value"].iloc[0]
-    c1_fpr = metrics.query(
-        "configuration == 'C1' and metric == 'false_positive_rate'"
-    )["value"].iloc[0]
+    c1_fpr = metrics.query("configuration == 'C1' and metric == 'false_positive_rate'")[
+        "value"
+    ].iloc[0]
     c0_attack = metrics.query(
         "configuration == 'C0' and attack == 'A1' and metric == 'attack_success_rate'"
     )["value"].iloc[0]

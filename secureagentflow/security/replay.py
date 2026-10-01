@@ -1,6 +1,6 @@
 """Timestamp-window and nonce replay protection."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from secureagentflow.messaging import MessageEnvelope
 from secureagentflow.security.exceptions import ReplayError
@@ -15,10 +15,10 @@ class ReplayGuard:
 
     def check(self, envelope: MessageEnvelope, now: datetime | None = None) -> None:
         """Validate and record an envelope nonce."""
-        current_time = now or datetime.now(timezone.utc)
+        current_time = now or datetime.now(UTC)
         timestamp = envelope.timestamp
         if timestamp.tzinfo is None:
-            timestamp = timestamp.replace(tzinfo=timezone.utc)
+            timestamp = timestamp.replace(tzinfo=UTC)
         age = abs((current_time - timestamp).total_seconds())
         if age > self.timestamp_window_seconds:
             raise ReplayError(f"Message timestamp outside window: {age:.3f}s")

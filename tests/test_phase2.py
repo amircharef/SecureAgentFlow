@@ -48,5 +48,10 @@ def test_baseline_plan_is_a_linear_dag() -> None:
 
     plan = orchestrator.build_plan(task)
 
-    assert plan.steps == ["extract_facts", "assess_risk", "write_summary", "verify_summary"]
+    assert plan.steps == [
+        "extract_facts",
+        "assess_risk",
+        "write_summary",
+        "verify_summary",
+    ]
     assert len(plan.edges) == len(plan.steps) - 1

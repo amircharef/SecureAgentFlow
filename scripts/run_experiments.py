@@ -21,13 +21,19 @@ from secureagentflow.security import CapabilityPolicy, SecurityConfig, SecurityL
 from secureagentflow.workflow import BaselineOrchestrator, ClinicalTask
 
 
-def build_security_layer(name: str, config_data: dict[str, Any], audit_dir: Path) -> SecurityLayer:
+def build_security_layer(
+    name: str, config_data: dict[str, Any], audit_dir: Path
+) -> SecurityLayer:
     """Build one named experiment security configuration."""
     config = SecurityConfig(
         **config_data,
         audit_path=audit_dir / f"{name}.jsonl" if config_data.get("d6_audit") else None,
     )
-    policy = CapabilityPolicy.from_file(Path("configs/policy.yaml")) if config.d3_permissions else None
+    policy = (
+        CapabilityPolicy.from_file(Path("configs/policy.yaml"))
+        if config.d3_permissions
+        else None
+    )
     return SecurityLayer(config, policy=policy)
 
 
@@ -45,7 +51,9 @@ def run_experiments(
         for seed in seeds:
             tasks = generate_tasks(experiment_config["dataset_count"], seed)
             layer = build_security_layer(configuration, security_config, audit_dir)
-            orchestrator = BaselineOrchestrator(MockLLM(), security=layer if configuration != "C0" else None)
+            orchestrator = BaselineOrchestrator(
+                MockLLM(), security=layer if configuration != "C0" else None
+            )
             for raw_task in tasks:
                 task = ClinicalTask.model_validate(raw_task)
                 output = orchestrator.run(task)
@@ -99,7 +107,9 @@ def main() -> None:
     """Parse CLI arguments and run the experiment matrix."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=Path("configs/experiments.yaml"))
-    parser.add_argument("--output", type=Path, default=Path("results/attack_runs.jsonl"))
+    parser.add_argument(
+        "--output", type=Path, default=Path("results/attack_runs.jsonl")
+    )
     args = parser.parse_args()
     run_experiments(args.config, args.output)
 

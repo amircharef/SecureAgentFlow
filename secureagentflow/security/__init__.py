@@ -10,13 +10,13 @@ from secureagentflow.security.sanitizer import InputSanitizer
 from secureagentflow.security.trust import TrustManager
 
 __all__ = [
-	"AgentIdentity",
-	"AuditLog",
-	"CapabilityPolicy",
-	"IdentityRegistry",
-	"InputSanitizer",
-	"ReplayGuard",
-	"SecurityConfig",
-	"SecurityLayer",
-	"TrustManager",
+    "AgentIdentity",
+    "AuditLog",
+    "CapabilityPolicy",
+    "IdentityRegistry",
+    "InputSanitizer",
+    "ReplayGuard",
+    "SecurityConfig",
+    "SecurityLayer",
+    "TrustManager",
 ]

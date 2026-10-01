@@ -1,6 +1,5 @@
 """Composable security gateway for agent messages and inputs."""
 
-from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
@@ -110,7 +109,9 @@ class SecurityLayer:
     def record_verifier_outcome(self, agent: str, accepted: bool) -> float:
         """Update D5 reputation after a verifier decision."""
         score = self.trust.update(agent, accepted) if self.config.d5_trust else 1.0
-        self._audit("trust_updated", {"agent": agent, "accepted": accepted, "score": score})
+        self._audit(
+            "trust_updated", {"agent": agent, "accepted": accepted, "score": score}
+        )
         return score
 
     def _audit(self, event: str, details: dict[str, Any]) -> None:
