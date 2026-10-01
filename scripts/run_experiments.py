@@ -56,7 +56,10 @@ def run_experiments(
                         "attack": "clean",
                         "task_id": task.task_id,
                         "success": output.success,
-                        "detected": bool(output.security_events),
+                        "detected": any(
+                            event["event"] == "input_quarantined"
+                            for event in output.security_events
+                        ),
                         "attack_succeeded": False,
                         "latency_ms": output.latency_ms,
                         "tokens_used": output.tokens_used,
